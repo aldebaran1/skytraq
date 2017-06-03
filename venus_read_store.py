@@ -8,7 +8,9 @@ Created on Sun May 21 14:35:38 2017
 import sys
 import glob
 import serial
-
+import getpass
+import datetime
+import os.path
 
 def serial_ports():
     """ Lists serial port names
@@ -20,11 +22,8 @@ def serial_ports():
     """
     if sys.platform.startswith('win'):
         ports = ['COM%s' % (i + 1) for i in range(256)]
-    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-        # this excludes your current terminal "/dev/tty"
-        ports = glob.glob('/dev/tty[A-Za-z]*')
-    elif sys.platform.startswith('darwin'):
-        ports = glob.glob('/dev/tty.*')
+    elif sys.platform.startswith('linux'):
+        ports = glob.glob('/dev/ttyUSB*')
     else:
         raise EnvironmentError('Unsupported platform')
 
@@ -38,6 +37,31 @@ def serial_ports():
             pass
     return result
     
+def createfile(fn):
+	"""
+	"""
+	if not os.path.exists(fn):
+		fw = open(fn, 'wb')
+	else:
+		c = 0
+		while os.path.isfile(fn):
+			c += 1
+			fn = fn + '_' + str(c)
+		fw = open(fn, 'wb')
+	return fw
+	
+def newfile():
+	"""
+	"""
+	fw.close()
+	t = datetime.datetime.utcnow()
+	tm = t.strftime('%Y%m%d')
+	day = t.strftime('%d')
+	fn = usr+'_'+tm
+	fw = createfile(fn)
+	return fw
+
+# Open serial port
 port = serial_ports()[0]
 ser = serial.Serial()
 ser.baudrate = 115200
@@ -47,11 +71,22 @@ try:
 except (Exception, serial.SerialException):
     pass
 
-fw = open('test.sqr', 'w')
-c=1
-while c < 1000:
-    inline = ser.readline()
-    fw.write(str(inline)+'\n')
-    c+=1
+# File name constitution
+usr = getpass.getuser()
+t = datetime.datetime.utcnow()
+tm = t.strftime('%Y%m%d')
+day = t.strftime('%d')
+fn = usr+'_'+tm
+fw = createfile(fn)
+
+
+a = 0
+while a < 1000:
+	dd = datetime.datetime.utcnow().strftime('%d')
+	if int(dd) > int(day):
+		fw = newfile()
+    #~ inline = ser.readline()
+	fw.write(ser.readline())
+	a+=1
 ser.close()
 fw.close()
