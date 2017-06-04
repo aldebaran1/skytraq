@@ -11,6 +11,8 @@ import serial
 import getpass
 import datetime
 import os.path
+import utilfunctions
+import time
 
 def serial_ports():
     """ Lists serial port names
@@ -42,11 +44,12 @@ def createfile(fn):
     if not os.path.exists(fn):
         fw = open(fn, 'wb')
     else:
-        c = 0
-        while os.path.isfile(fn):
+        c = 1
+        fn_temp = fn + '_' + str(c)
+        while os.path.isfile(fn_temp):
             c += 1
-            fn = fn + '_' + str(c)
-        fw = open(fn, 'wb')
+            fn_temp = fn + '_' + str(c)
+        fw = open(fn_temp, 'wb')
     return fw
 
 def newfile(fw, day):
@@ -63,10 +66,12 @@ def newfile(fw, day):
 
 def setModuleMore(ser):
 #    prefix = '\xa0\xa1\x00\x03'
-#    data = '\x09\x02\x01'
+    data = '\x09\x02\x01'
+    cs = utilfunctions.checksum(data)
+    #~ print (cs)
 #    cs = chr(sum(map(ord, data)))
 #    sufix = '\x0d\x0a'
-    message = '\xa0\xa1\x00\x03\x09\x02\x01\x0c\x0d\x0a'
+    message = '\xa0\xa1\x00\x03\x09\x02\x01\x0a\x0d\x0a'
     ser.write(message)
     ack = ser.readline()
     return ack
@@ -126,19 +131,26 @@ fw = createfile(fn)
 
 # Main script
 a = 0
-#ack1 = setModuleMore(ser)
-#ack2 = setDataOutput(ser)
+# Configure the board
+ack1 = setModuleMore(ser)
+time.sleep(0.1)
+ack2 = setDataOutput(ser)
+time.sleep(0.1)
 #pos_rate = readPositionDataRate(ser)
-bin_rate = readBinaryDataRate(ser)
+#bin_rate = readBinaryDataRate(ser)
 #print ('Data return ack: ', ack2)
 #print ('Query return: ', pos_rate)
-print ('Query return binary: ', bin_rate)
-#while a < 10:
-#    dd = datetime.datetime.utcnow().strftime('%d')
-#    if int(dd) > int(day):
-#        fw = newfile(fw, day)
-#    fw.write(ser.readline())
-#    a+=1
-#print ('to je to')
+#~ print ('Query return binary: ', ack1)
+#~ print ('Query return binary: ', ack2)
+
+# Read and store the data
+while True:
+    dd = datetime.datetime.utcnow().strftime('%d')
+    if int(dd) > int(day):
+        fw = newfile(fw, day)
+    fw.write(ser.readline())
+    #~ print (str(ser.readline()))
+    a+=1
+print ('to je to')
 ser.close()
 fw.close()
