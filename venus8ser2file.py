@@ -62,7 +62,7 @@ def newfile(fw, day):
     path = os.path.dirname(os.path.realpath(__file__))
     fn = path+'/data/'+usr+'_'+tm
     fw = createfile(fn)
-    return fw
+    return fw, day
 
 def setModuleMore(ser):
 #    prefix = '\xa0\xa1\x00\x03'
@@ -147,7 +147,7 @@ time.sleep(0.1)
 while True:
     dd = datetime.datetime.utcnow().strftime('%d')
     if int(dd) > int(day):
-        fw = newfile(fw, day)
+        fw, day = newfile(fw, day)
     fw.write(ser.readline())
     #~ print (str(ser.readline()))
     a+=1
