@@ -13,6 +13,7 @@ import datetime
 import os.path
 import utilfunctions
 import time
+import socket
 
 def serial_ports():
     """ Lists serial port names
@@ -121,7 +122,7 @@ except (Exception, serial.SerialException):
     raise EnvironmentError('No ports found')
 
 # File name constitution
-usr = getpass.getuser()
+usr = socket.gethostname()
 t = datetime.datetime.utcnow()
 tm = t.strftime('%Y%m%d')
 day = t.strftime('%d')
