@@ -7,6 +7,7 @@ Created on Fri Jun 16 12:14:51 2017
 import requests
 import urllib3
 from datetime import datetime
+import socket
 
 def getIP():
     """
@@ -27,8 +28,9 @@ def send_simple_message(dev_name, ip):
         data={"from": "Mailgun Sandbox <postmaster@sandbox1b5516af304e4d3bbb4ce505c254cbca.mailgun.org>",
               "to": "Sebastijan <sebastijan.mrak@gmail.com>",
               "subject": "Current IP address for device: " + dev_name,
-              "text": "IP address at a time "+str(time)+" is: "+str(ip)})
+              "text": "IP address of the HOST: " +dev_name+ "at a time "+str(time)+" is: "+str(ip)})
     
 ip = getIP()
+hostname = socket.gethostname()
 #print (ip)
-send_simple_message('PC1', ip)
+send_simple_message(hostname, ip)
