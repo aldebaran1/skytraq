@@ -53,17 +53,18 @@ def createfile(fn):
         fw = open(fn_temp, 'wb')
     return fw
 
-def newfile(fw, day):
+def newfile(fw, dd, mm, yy):
     """
     """
     fw.close()
-    t = datetime.datetime.utcnow()
-    tm = t.strftime('%Y%m%d')
-    day = t.strftime('%d')
+    #t = datetime.datetime.utcnow()
+    #tm = t.strftime('%Y%m%d')
+    #day = t.strftime('%d')
+    tm = str(yy)+str(mm)+str(dd)
     path = os.path.dirname(os.path.realpath(__file__))
     fn = path+'/data/'+usr+'_'+tm
     fw = createfile(fn)
-    return fw, day
+    return fw
 
 def setModuleMore(ser):
 #    prefix = '\xa0\xa1\x00\x03'
@@ -105,7 +106,8 @@ def setDataOutput(ser):
     # 37
     # 0D 0A
     data = '\x1E\x04\x00\x00\x01\x00\x01\x00\x01'
-    message = '\xA0\xA1\x00\x09\x1E\x04\x01\x01\x01\x01\x01\x00\x01\x1a\x0D\x0A'
+#    message = '\xA0\xA1\x00\x09\x1E\x04\x01\x01\x01\x01\x01\x00\x01\x1a\x0D\x0A'
+    message = '\xA0\xA1\x00\x09\x1E\x03\x01\x01\x01\x01\x01\x00\x01\x1D\x0D\x0A'
 #    message = '\xA0\xA1\x00\x09\x1E\x00\x00\x00\x01\x01\x03\x01\x01\x1d\x0D\x0A'
     ser.write(message)
     ack = ser.readline()
@@ -125,7 +127,9 @@ except (Exception, serial.SerialException):
 usr = socket.gethostname()
 t = datetime.datetime.utcnow()
 tm = t.strftime('%Y%m%d')
-day = t.strftime('%d')
+dd1 = t.strftime('%d')
+mm1 = t.strftime('%m')
+yy1 = t.strftime('%y')
 path = os.path.dirname(os.path.realpath(__file__))
 fn = path+'/data/'+usr+'_'+tm
 fw = createfile(fn)
@@ -146,12 +150,15 @@ time.sleep(0.1)
 
 # Read and store the data
 while True:
-    dd = datetime.datetime.utcnow().strftime('%d')
-    if int(dd) > int(day):
-        fw, day = newfile(fw, day)
+    tt = datetime.datetime.utcnow()
+    dd = tt.strftime('%d')
+    yy = tt.strftime('%y')
+    mm = tt.strftime('%m')
+    if (int(dd) > int(dd1)) or (int(yy) > int(yy1)) or (int(mm) > int(mm1)):
+        fw  = newfile(fw, d)
     fw.write(ser.readline())
     #~ print (str(ser.readline()))
-    a+=1
+    #a+=1
 print ('to je to')
 ser.close()
 fw.close()
