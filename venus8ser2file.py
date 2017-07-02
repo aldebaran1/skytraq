@@ -64,7 +64,7 @@ def newfile(fw, dd, mm, yy):
     path = os.path.dirname(os.path.realpath(__file__))
     fn = path+'/data/'+usr+'_'+tm
     fw = createfile(fn)
-    return fw
+    return fw, dd, mm, yy
 
 def setModuleMore(ser):
 #    prefix = '\xa0\xa1\x00\x03'
@@ -106,9 +106,9 @@ def setDataOutput(ser):
     # 37
     # 0D 0A
     data = '\x1E\x04\x00\x00\x01\x00\x01\x00\x01'
-#    message = '\xA0\xA1\x00\x09\x1E\x04\x01\x01\x01\x01\x01\x00\x01\x1a\x0D\x0A'
-    message = '\xA0\xA1\x00\x09\x1E\x03\x01\x01\x01\x01\x01\x00\x01\x1D\x0D\x0A'
-#    message = '\xA0\xA1\x00\x09\x1E\x00\x00\x00\x01\x01\x03\x01\x01\x1d\x0D\x0A'
+#10Hz    message = '\xA0\xA1\x00\x09\x1E\x04\x01\x01\x01\x01\x01\x00\x01\x1a\x0D\x0A'
+#    message = '\xA0\xA1\x00\x09\x1E\x03\x01\x01\x01\x01\x01\x00\x01\x1D\x0D\x0A'
+    message = '\xA0\xA1\x00\x08\x1E\x00\x01\x01\x01\x00\x01\x01\x1F\x0D\x0A'
     ser.write(message)
     ack = ser.readline()
     return ack
@@ -155,7 +155,7 @@ while True:
     yy = tt.strftime('%y')
     mm = tt.strftime('%m')
     if (int(dd) > int(dd1)) or (int(yy) > int(yy1)) or (int(mm) > int(mm1)):
-        fw  = newfile(fw, d)
+        fw, dd1, mm1, yy1  = newfile(fw, dd, mm, yy)
     fw.write(ser.readline())
     #~ print (str(ser.readline()))
     #a+=1
