@@ -61,8 +61,10 @@ def newfile(fw, dd, mm, yy):
     #tm = t.strftime('%Y%m%d')
     #day = t.strftime('%d')
     tm = str(yy)+str(mm)+str(dd)
+    t = datetime.datetime.utcnow()
+    day_in_year = t.timetuple().tm_yday
     path = os.path.dirname(os.path.realpath(__file__))
-    fn = path+'/data/'+usr+'_'+tm
+    fn = path+'/data/'+usr+'0'+str(day_in_year)+'.'+yy+'r'
     fw = createfile(fn)
     return fw, dd, mm, yy
 
@@ -106,9 +108,9 @@ def setDataOutput(ser):
     # 37
     # 0D 0A
     data = '\x1E\x04\x00\x00\x01\x00\x01\x00\x01'
-#10Hz    message = '\xA0\xA1\x00\x09\x1E\x04\x01\x01\x01\x01\x01\x00\x01\x1a\x0D\x0A'
+    message = '\xA0\xA1\x00\x08\x1E\x04\x01\x01\x01\x00\x01\x01\x1B\x0D\x0A' # 10 Hz
 #    message = '\xA0\xA1\x00\x09\x1E\x03\x01\x01\x01\x01\x01\x00\x01\x1D\x0D\x0A'
-    message = '\xA0\xA1\x00\x08\x1E\x00\x01\x01\x01\x00\x01\x01\x1F\x0D\x0A'
+#    message = '\xA0\xA1\x00\x08\x1E\x00\x01\x01\x01\x00\x01\x01\x1F\x0D\x0A' # 1Hz
     ser.write(message)
     ack = ser.readline()
     return ack
@@ -130,8 +132,9 @@ tm = t.strftime('%Y%m%d')
 dd1 = t.strftime('%d')
 mm1 = t.strftime('%m')
 yy1 = t.strftime('%y')
+day_in_year = t.timetuple().tm_yday
 path = os.path.dirname(os.path.realpath(__file__))
-fn = path+'/data/'+usr+'_'+tm
+fn = path+'/data/'+usr+'0'+str(day_in_year)+'.'+yy1+'r'
 fw = createfile(fn)
 
 # Main script
