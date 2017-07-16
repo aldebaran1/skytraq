@@ -1,0 +1,40 @@
+1) Install Rasbpian 8 Jessie console version
+
+2) sudo adduser rpizX
+pw: eclipse_gps
+3) sudo adduser rpizX sudo
+   sudo reboot
+   login as repizX
+   sudo deluser -remove-home pi
+
+3.1) 
+   sudo nano /etc/systemd/system/autologin@.service
+   --autologin pi   -->  --autologin rpizX
+   
+   sudo reboot
+
+4) sudo raspi-config
+	-> boot options
+	-> console autologin
+	
+	-> enalbe SSH
+
+5) sudo apt-get update
+   sudo apt-get install git
+   sudo apt-get install python-pip
+   sudo pip install pyserial
+
+
+6) git clone https://github.com/aldebaran1/skytraq.git
+7) mkdir ~/skytraq/data
+
+8) sudo crontab -e
+@reboot sleep 120 && python /home/rpizX/skytraq/venus8ser2file.py
+@reboot sleep 150 && python /home/rpizX/skytraq/send_Email.py
+0 6 * * * python /home/rpizX/skytraq/send_Email.py
+
+9) sudo nano /etc/hostname 
+	-> new hostname "rpizX"
+10) sudo nano /etc/hosts
+	-> raspberrypi -> "rpizX"
+11) sudo reboot
