@@ -3,6 +3,7 @@
 2) sudo adduser rpizX
 pw: eclipse_gps
 3) sudo adduser rpizX sudo
+   sudo adduser rpizX gpio
    sudo reboot
    login as repizX
    sudo deluser -remove-home pi
