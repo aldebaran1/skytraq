@@ -23,6 +23,7 @@ time.sleep(5)
 GPIO.OUTPUT(pin, GPIO.LOW)
 """block end"""
 
+"""
 usr = socket.gethostname()        
 t = datetime.datetime.utcnow()
 #tm = t.strftime('%Y%m%d')
@@ -33,3 +34,4 @@ day_in_year = t.timetuple().tm_yday
 path = os.path.dirname(os.path.realpath(__file__))
 fn = path+'/data/'+usr+'0'+str(day_in_year)+'.'+yy1+'r' 
 sizeA =int( os.path.getsize(fn) )
+"""
